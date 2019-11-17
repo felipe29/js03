@@ -19,8 +19,10 @@ class UserController {
       return res.status(400).json({ error: 'Validation fails' });
     }
     const { email, oldPassword } = req.body;
-    const { id } = req;
-    const user = await User.findByPk(id);
+    const { userId } = req;
+
+    const user = await User.findByPk(userId);
+
     if (email !== user.email) {
       const userExists = await User.findOne({ where: { email } });
       if (userExists) {
@@ -32,7 +34,7 @@ class UserController {
       return res.status(400).json({ error: 'Password does not match' });
     }
     const { name, provider } = await user.update(req.body);
-    return res.json({ id, name, email, provider });
+    return res.json({ userId, name, email, provider });
   }
 }
 

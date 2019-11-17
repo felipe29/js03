@@ -45,8 +45,16 @@ class UserController {
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
       return res.status(401).json({ error: 'Password does not match' });
     }
-    const { id, name, provider } = await user.update(req.body);
-    return res.status(200).json({ id, name, email, provider });
+
+    await user.update(req.body);
+
+    console.log(email);
+    const { id, name, provider, avatar } = await User.findByPk(req.userId, {
+      include: [
+        { model: Files, as: 'avatar', attributes: ['id', 'path', 'url'] },
+      ],
+    });
+    return res.status(200).json({ id, name, email, provider, avatar });
   }
 }
 
